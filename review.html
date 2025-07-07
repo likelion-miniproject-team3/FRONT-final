@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="review.css" />
+  </head>
+  <body>
+    <!-- 상단 검색창 -->
+    <div class="search-bar">
+      <svg
+        class="search-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="#222"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        viewBox="0 0 24 24"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <line x1="16.5" y1="16.5" x2="21" y2="21" />
+      </svg>
+      <input type="text" id="searchInput" />
+    </div>
+
+    <!-- 학년 선택 버튼 -->
+    <div class="grade-button-group">
+      <button class="grade-btn active"><span>1학년</span></button>
+      <button class="grade-btn"><span>2학년</span></button>
+      <button class="grade-btn"><span>3학년</span></button>
+      <button class="grade-btn"><span>4학년</span></button>
+    </div>
+
+    <!-- 문구 -->
+    <h3 class="text">수강평 모아보기</h3>
+
+    <!-- 과목별 버튼 나올 공간 -->
+    <div id="subject-buttons"></div>
+
+    <!-- 과목 상세 후기 보기 화면 -->
+    <div id="review-detail" style="display: none; padding: 0px">
+      <div class="header">
+        <div class="review-header">
+          <button id="back-button" style="background: none; border: none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              fill="#333"
+              viewBox="0 0 24 24"
+            >
+              <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
+          </button>
+
+          <h2 id="subject-title"></h2>
+        </div>
+
+        <div class="rating">
+          <div class="stars">☆☆☆☆☆</div>
+          <div class="rating-score"></div>
+        </div>
+      </div>
+
+      <div class="section lecture-section">
+        <div class="section-header">
+          <h3>강의평 모아보기</h3>
+          <button class="write-button">평가하기</button>
+        </div>
+        <div class="lecture-reviews"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section exam-section">
+        <div class="section-header">
+          <h3>시험 정보 모아보기</h3>
+          <button class="write-button">등록하기</button>
+        </div>
+        <div class="exam-reviews"></div>
+      </div>
+    </div>
+
+    <!-- 🔽 강의평 작성 폼 -->
+    <!-- 강의평 작성 폼 -->
+    <div
+      id="write-form"
+      style="display: none; background-color: #f7f8fc; padding: 16px"
+    >
+      <div class="form-header">
+        <button id="write-back-button" style="background: none; border: none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="#333"
+            viewBox="0 0 24 24"
+          >
+            <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+
+        <h2 id="write-form-title">강의평 작성하기</h2>
+      </div>
+      <div class="write-rating">
+        <div class="write-stars">
+          <span data-value="1">★</span>
+          <span data-value="2">★</span>
+          <span data-value="3">★</span>
+          <span data-value="4">★</span>
+          <span data-value="5">★</span>
+        </div>
+        <strong class="write-score">0.0/5</strong>
+      </div>
+      <div class="divider"></div>
+      <p id="semester-label">수강한 학기를 선택해 주세요.</p>
+      <div class="select-row">
+        <div class="custom-select" id="custom-select">
+          <div class="selected" id="selected">
+            <span id="selected-text">응시 학기</span>
+            <svg
+              class="dropdown-arrow"
+              id="dropdownArrow"
+              xmlns="http://www.w3.org/2000/svg"
+              height="20"
+              width="20"
+              viewBox="0 0 24 24"
+              fill="#3b6ef7"
+            >
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
+          </div>
+          <ul class="options" id="options">
+            <li>25학년도 1학기</li>
+            <li>25학년도 2학기</li>
+            <li>24학년도 1학기</li>
+            <li>24학년도 2학기</li>
+            <li>23학년도 1학기</li>
+            <li>23학년도 2학기</li>
+          </ul>
+        </div>
+        <div class="custom-select" id="exam-type-select">
+          <div class="selected" id="exam-type-selected">
+            <span id="exam-type-selected-text">응시회차</span>
+            <svg
+              class="dropdown-arrow"
+              id="exam-type-arrow"
+              xmlns="http://www.w3.org/2000/svg"
+              height="20"
+              width="20"
+              viewBox="0 0 24 24"
+              fill="#3b6ef7"
+            >
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
+          </div>
+          <ul class="options" id="exam-type-options">
+            <li>중간고사</li>
+            <li>기말고사</li>
+          </ul>
+        </div>
+
+        <div class="upload-area" id="upload-area" style="display: none">
+          <button type="button" class="upload-button" id="upload-button">
+            자료 업로드
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#3b6ef7"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="margin-left: 6px"
+            >
+              <path d="M12 19V5" />
+              <polyline points="5 12 12 5 19 12" />
+              <path d="M5 19h14" />
+            </svg>
+          </button>
+          <ul id="upload-options" class="hidden">
+            <li id="upload-photo" class="upload-option">
+              <span>사진 보관함</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="black"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <path d="M21 15l-5-5L5 21" />
+              </svg>
+            </li>
+            <div class="divider-line"></div>
+            <li id="upload-file" class="upload-option">
+              <span>파일 선택</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="black"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M4 4h16v16H4z" />
+                <path d="M4 8h16" />
+              </svg>
+            </li>
+          </ul>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*,.pdf,.docx"
+            style="display: none"
+          />
+        </div>
+      </div>
+
+      <textarea placeholder="이 강의에 대한 평가를 작성해 주세요."></textarea>
+      <!-- 업로드 이미지 미리보기 영역 -->
+      <div class="uploaded-images" id="uploaded-images"></div>
+
+      <button class="submit-review" id="submit-review">작성하기</button>
+    </div>
+
+    <!-- 하단 네비게이션 -->
+    <footer class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <!-- 집 아이콘 -->
+        <svg
+          width="24"
+          height="24"
+          fill="#aaa"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M3 9.75L12 3l9 6.75V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.75Z"
+          />
+        </svg>
+        <span>홈</span>
+      </a>
+
+      <a href="review.html" class="nav-item active">
+        <!-- 문서 아이콘 -->
+        <svg
+          width="24"
+          height="24"
+          fill="#aaa"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M6 2a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6H6Zm7 1.5L18.5 9H13a.5.5 0 0 1-.5-.5V3.5ZM8 13h8v1.5H8V13Zm0 3h8V17H8v-1.5Z"
+          />
+        </svg>
+        <span>후기</span>
+      </a>
+
+      <a href="my.html" class="nav-item">
+        <!-- 사람 아이콘 -->
+        <svg
+          width="24"
+          height="24"
+          fill="#aaa"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10ZM4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6v1H4v-1Z"
+          />
+        </svg>
+        <span>마이</span>
+      </a>
+    </footer>
+
+    <!-- 알림 모달 -->
+    <div id="custom-alert" class="custom-alert" style="display: none">
+      <div class="custom-alert-box">
+        <p id="custom-alert-message">알림 메시지</p>
+        <div class="custom-divider"></div>
+        <button id="custom-alert-ok">확인</button>
+      </div>
+    </div>
+
+    <script src="review.js"></script>
+  </body>
+</html>

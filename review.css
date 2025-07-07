@@ -1,0 +1,1059 @@
+body {
+  background-color: #f7f8fc;
+  margin: 0;
+  padding-bottom: 120px; /* 하단 네비게이션 가려짐 방지 */
+  font-family: sans-serif;
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+html {
+  height: 100%;
+  overflow-y: hidden;
+}
+
+/* 검색창 고정 */
+.search-bar {
+  position: fixed;
+  top: 15px; /* 상단 여백 포함 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #3b6ef7;
+  border-radius: 10px;
+  padding: 8px 12px;
+  width: 90%;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  width: 20px;
+  height: 24px;
+  margin-right: 8px;
+  stroke: black;
+  flex-shrink: 0;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 학년 버튼 고정 */
+.grade-button-group {
+  position: fixed;
+  top: 73px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  gap: 14px;
+  z-index: 99;
+}
+
+.grade-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6.4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid #3b6ef7;
+  border-radius: 6px;
+  background-color: white;
+  color: #3b6ef7;
+  cursor: pointer;
+  transition: all 0.005s;
+}
+
+.grade-btn .arrow-icon {
+  width: 14px;
+  height: 14px;
+  display: none;
+}
+
+.grade-btn.active {
+  background-color: #3b6ef7;
+  color: white;
+}
+
+.grade-btn.active .arrow-icon {
+  display: inline;
+}
+
+h3.text {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+  font-size: 23px;
+  font-weight: bold;
+  z-index: 98;
+}
+
+/* 과목 버튼 목록 */
+#subject-buttons {
+  margin: 0 20px;
+  margin-top: 175px; /* 고정된 요소들 아래로 */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100vh - 360px);
+  overflow-y: auto;
+  padding-bottom: 120px;
+
+  /* 스크롤바 없애기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+}
+#subject-buttons::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* 과목 버튼 카드 스타일 */
+.subject-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px;
+  border-radius: 12px;
+  background-color: white;
+  /* box-shadow: 0px -1px 8px rgba(0, 0, 0, 0.08); */
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+/* 왼쪽 구성 */
+.subject-btn .left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* 프로필 아이콘 */
+.subject-btn .profile {
+  width: 49px;
+  height: 49px;
+  background-color: #ddd;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-icon {
+  width: 80%;
+  height: 80%;
+}
+
+/* 과목 정보 */
+.subject-btn .info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 왼쪽 정렬 */
+  line-height: 1.3;
+}
+
+.subject-btn .info .name {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.subject-btn .info .detail {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* 오른쪽 화살표 */
+.subject-btn .arrow {
+  font-size: 30px;
+  color: #5e5e5e;
+  margin-right: 6px;
+}
+
+/* 하단 고정 네비게이션 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* ← 위로 몰리지 않게 조절 */
+  padding-top: 15px;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  font-size: 12px;
+  color: #aaa;
+  text-decoration: none;
+  padding-bottom: 50px;
+}
+
+.nav-item svg {
+  display: block;
+  margin: 0 auto 4px;
+}
+
+.nav-item span {
+  margin-top: 4px; /* 아이콘과 글자 사이 */
+}
+
+.nav-item.active span {
+  color: #3b6ef7;
+}
+
+.nav-item.active svg {
+  fill: #3b6ef7;
+}
+
+/* 리뷰 상세 상단 영역 정렬 */
+/* .review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f7f8fc;
+  padding: 16px 16px 8px;
+  margin-bottom: 2px;
+  position: relative;
+  margin: 50px 0 2px;
+  gap: 10px;
+} */
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+#subject-title {
+  font-size: 18px !important; /* 원하는 크기 */
+  font-weight: bold;
+  flex: 1; /* 공간 확보 */
+  text-align: center;
+}
+
+.stars {
+  color: gold;
+  font-size: 22px;
+  font-weight: bold;
+  display: flex;
+  gap: 5px;
+}
+
+#back-button {
+  position: absolute;
+  left: 8px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#subject-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0; /* 혹시 위쪽 기본 마진 제거 */
+}
+
+/* 별점 영역 */
+.rating {
+  background-color: #f7f8fc;
+  padding: 12px 0;
+  /* font-size: 20px;
+  color: black;
+  margin-bottom: 2px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: -10px;
+}
+
+.rating-score {
+  color: black; /* 점수는 검정색 */
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.rating-score span {
+  font-size: 11px;
+  vertical-align: super; /* 위 첨자처럼 */
+  margin-left: 2px;
+  color: #444;
+}
+
+/* 강의평/시험 정보 영역 */
+.section {
+  background-color: #f7f8fc;
+  width: 100%;
+  padding: 16px 20px;
+  margin-bottom: 0px; /* ← 여기! */
+  box-sizing: border-box;
+  border-top: 10px solid white;
+  /* border-bottom: 10px solid white; */
+}
+
+.header {
+  background-color: #f7f8fc;
+  /* border-bottom: 10px solid white; */
+  padding: 16px 20px;
+}
+
+.section-divider {
+  height: 10px;
+  background-color: white;
+  width: 100%;
+}
+
+/* 각 섹션 제목 + 버튼 정렬 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+/* 섹션 제목 */
+.section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 평가하기 / 등록하기 버튼 */
+.write-button {
+  background-color: #3b6ef7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.write-stars span.half {
+  background: linear-gradient(to right, gold 50%, #ddd 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#write-form .form-header {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+  height: 48px;
+  margin-bottom: 20px;
+  justify-content: center;
+  position: relative;
+  margin-top: -18px;
+  margin-bottom: 16px;
+}
+
+#write-form .form-header h2 {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+#write-form .form-header button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  margin-right: 10px;
+  cursor: pointer;
+  position: absolute;
+  left: 12px;
+  top: 16px;
+}
+
+.write-stars span.full {
+  color: gold;
+}
+
+/* 강의/시험 리뷰 공간 여백 */
+.lecture-reviews,
+.exam-reviews {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 6px;
+  min-height: 100px;
+}
+
+.lecture-reviews {
+  min-height: 100px; /* 보기용 임시 높이 */
+  background-color: #f0f0f0;
+  margin-bottom: 0; /* 박스가 보이도록 */
+}
+
+.lecture-reviews::-webkit-scrollbar,
+.exam-reviews::-webkit-scrollbar {
+  width: 6px;
+}
+
+.lecture-reviews::-webkit-scrollbar-thumb,
+.exam-reviews::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1); /* 연한 회색 */
+  border-radius: 4px;
+}
+
+/* 강의평 모아보기 카드 */
+.lecture-reviews .review-card {
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+/* 시험 정보 모아보기 카드 */
+.exam-reviews .review-card {
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  min-height: auto;
+}
+/* 평가 없음 메시지 등 숨기기 */
+#subject-detail {
+  display: none !important;
+}
+
+/* 별점 작성 영역 스타일 */
+
+#write-form {
+  display: none;
+  background-color: #f7f8fc;
+  padding: 20px;
+}
+
+.write-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+#write-back-button {
+  position: absolute;
+  left: 8px; /* #back-button과 동일 */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.write-rating {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-weight: bold;
+  margin: 5px 0 10px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.write-stars {
+  display: flex;
+  cursor: pointer;
+  font-size: 24px;
+  letter-spacing: 4px;
+  cursor: pointer;
+}
+
+.write-stars span {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ddd;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.write-stars span.active {
+  background: url('star-filled.svg') no-repeat center;
+  background-size: contain;
+  color: gold;
+}
+
+.write-score {
+  color: black;
+  margin-left: 12px;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.divider {
+  height: 10px;
+  background-color: white;
+  margin-top: 500px;
+  margin-bottom: 20px;
+}
+
+/* #semester-select {
+  width: 120px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  margin-bottom: 80px;
+  font-weight: 500;
+  appearance: auto;
+  color: #3b6ef7; /* 초기에는 파란색으로 보여지도록 
+}*/
+
+.custom-select {
+  position: relative;
+  width: 130px;
+  margin-bottom: 16px;
+  user-select: none;
+}
+
+.selected {
+  padding: 4px 7px;
+  border-radius: 8px;
+  background-color: white;
+  color: #3b6ef7;
+  /* font-weight: 500; */
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-arrow {
+  margin-left: 5px;
+  width: 25px;
+  height: 25px;
+  color: #3b6ef7;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.rotate {
+  transform: rotate(180deg);
+}
+
+.options {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0 0;
+  border: 1.2px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 10;
+  display: none;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.options li {
+  padding: 5px 12px;
+  cursor: pointer;
+  color: black;
+  font-size: 12px;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
+}
+
+#semester-select option {
+  color: black;
+}
+#write-form {
+  display: none;
+  position: relative;
+  min-height: 100vh;
+  /* 네비게이션 제외 높이 확보 */
+  padding: 20px;
+  padding-bottom: 120px; /* 작성 버튼과 네비게이션 피하기 위한 여유 공간 */
+  box-sizing: border-box;
+  overflow: visible; /* 내부에서 스크롤 안 생기게 */
+}
+
+/* 텍스트 영역 */
+#write-form textarea {
+  width: 100%;
+  height: 180px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  resize: none;
+  box-shadow: 0 0 0 1px #eee;
+  font-size: 14px;
+  margin-bottom: 16px;
+  margin-top: -20px;
+  box-sizing: border-box;
+  color: #333; /* 다른 요소와 같은 글자색 */
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Pretendard', sans-serif; /* 상위 요소 폰트와 통일 */
+}
+
+#write-form textarea::placeholder {
+  color: #333; /* 다른 요소와 같은 글자색 */
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Pretendard', sans-serif; /* 상위 요소 폰트와 통일 */
+}
+
+/* 수강 학기 문구 */
+#write-form p {
+  margin-top: 20px;
+  margin-left: 5px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* 작성하기 버튼 */
+.submit-review {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3b6ef7;
+  background-color: #f7f8fc;
+  border: 1.5px solid #3b6ef7;
+  border-radius: 12px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 90px; /* 네비게이션 바 위에 오도록 */
+  left: 20px;
+  right: 20px;
+  width: auto;
+  z-index: 99;
+}
+/*  */
+/*  */
+/*  */
+.review-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  font-family: sans-serif;
+}
+
+.review-stars {
+  font-size: 16px;
+  color: #f7b500;
+  /* font-weight: 600;
+  margin-left: auto; */
+  white-space: nowrap;
+}
+
+.review-semester {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+}
+.review-content {
+  font-size: 14px;
+  color: #111;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+#exam-type-select {
+  display: none; /* 기본은 숨김 */
+  margin-bottom: 16px;
+  gap: 10px;
+  width: 90px;
+}
+
+.select-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 17px;
+  margin-top: 14px;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+}
+
+.selected span {
+  white-space: nowrap; /* 줄바꿈 안 되게 */
+}
+#write-form textarea.exam-placeholder::placeholder {
+  color: #888;
+}
+
+/*  */
+/*  */
+
+.custom-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.custom-alert-box {
+  background: white;
+  padding: 10px 0px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 73%;
+  /* height: 70px; */
+  max-width: 300px;
+  font-family: sans-serif;
+}
+
+.custom-alert-box p {
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: #111;
+  font-weight: 500;
+}
+
+.custom-alert-box button {
+  margin-top: -5px;
+  background: none;
+  border: none;
+  color: #3b6ef7;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 회색선 */
+.custom-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ddd; /* 회색 */
+  margin: 12px 0;
+}
+
+/*  */
+/*  */
+.upload-area {
+  position: relative;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.upload-button {
+  display: flex;
+  width: 122px;
+  height: 40px;
+  align-items: center;
+  padding: 8px 14px;
+  border: 2px solid #3b6ef7;
+  border-radius: 12px;
+  background-color: #f7f8fc;
+  color: #3b6ef7;
+  font-size: 13px;
+
+  font-weight: 400;
+  cursor: pointer;
+}
+
+#upload-options {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  border: 1px solid #ccc;
+  background-color: white;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 10px;
+  width: 120px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#upload-options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#upload-options li:hover {
+  background-color: #f0f0f0;
+}
+
+.hidden {
+  display: none;
+}
+
+/*  */
+/*  */
+.upload-area {
+  position: relative;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.upload-button {
+  display: flex;
+  width: auto;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  border: 1.5px solid #3b6ef7;
+  border-radius: 6px;
+  background-color: #f7f8fc;
+  color: #3b6ef7;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  gap: 0px;
+}
+
+.upload-button svg {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+#upload-options {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 140px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0px 0;
+  z-index: 1000;
+  font-size: 13px;
+  border: 1px solid #ccc;
+}
+
+#upload-options li {
+  padding: 6px 12px; /* 예시: 작고 타이트하게 */
+}
+
+.upload-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #111;
+  font-size: 12px;
+}
+
+.upload-option:hover {
+  background-color: #f5f5f5;
+}
+
+.divider-line {
+  height: 1px;
+  background-color: #e0e0e0;
+  width: 100%; /* 양옆 다 채움 */
+  display: block; /* 블록 요소로 만들어줘야 li처럼 줄 전체 차지 */
+  margin: 0; /* 여백 없애기 */
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  stroke: #111;
+  flex-shrink: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+/*  */
+/*  */
+.uploaded-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.uploaded-image {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #eee;
+}
+
+.uploaded-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.review-meta {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #333;
+  flex: 1;
+  margin-left: 2px;
+}
+.nickname {
+  font-weight: 700; /* 또는 bold */
+  font-size: 15px; /* 필요하면 글씨 크기도 조정 가능 */
+  color: #333; /* 색도 어두운 회색으로 하면 더 또렷해져 */
+  /* top: 50px; */
+}
+
+.review-meta .semester {
+  font-size: 13px;
+  color: #666;
+}
+
+.review-info {
+  flex-grow: 1;
+}
+
+.semester.small-gray {
+  font-size: 12px;
+  color: #999;
+}
+
+.exam-subinfo {
+  font-size: 12px;
+  font-weight: 420;
+  color: #999;
+}
+
+.download-link {
+  background-color: #f7f8fc;
+  color: #3b6ef7;
+  text-decoration: none;
+  font-size: 13px;
+  /* border: 1px solid #3b6ef7; */
+  padding: 5px 8px;
+  border-radius: 5px;
+  margin-left: auto;
+  text-decoration: none;
+  cursor: pointer;
+}
+.review-card.exam .profile-img {
+  width: 32px;
+  margin-left: 10px !important;
+}
+.review-card.exam .review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.review-card.exam .profile-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.divider {
+  height: 10px;
+  margin: 16px -20px;
+}
+
+/* 스타일도 따로 정의 */
+/* .form-divider {
+  height: 2px;
+  background-color: white;
+  margin: 12px 0;
+} */
+
+.section.lecture-section {
+  min-height: 302px;
+  max-height: 350px; /* 기존보다 넉넉하게 */
+  overflow-y: auto; /* 필요에 따라 250px 정도까지 조절 가능 */
+}
+
+.section.exam-section {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 0;
+  border-top: none;
+}
+
+.default-profile-icon {
+  width: 90%;
+  height: 90%;
+  fill: white;
+  display: block;
+  margin: auto;
+  margin-top: 1px;
+}
+.review-icon svg {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+/*  */
+/*  */

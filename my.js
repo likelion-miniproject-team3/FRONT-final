@@ -661,7 +661,9 @@ document.addEventListener('DOMContentLoaded', function () {
             mode: 'lectureWrite',
           })
         );
-        window.location.href = 'review.html';
+        window.location.href = `review.html?subject=${encodeURIComponent(
+          cleanSubName
+        )}`;
       });
 
       const gotoBtn = card.querySelector('.goto-home-button');

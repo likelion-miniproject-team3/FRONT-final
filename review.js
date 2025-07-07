@@ -26,6 +26,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
   const nickname = savedUserInfo?.usernickname || '익명';
 
+  const params = new URLSearchParams(window.location.search);
+  const subjectFromParam = params.get('subject');
+
+  if (subjectFromParam) {
+    document.getElementById('subject-title').textContent = subjectFromParam;
+    renderRating();
+    loadLectureReviews(subjectFromParam);
+    loadExamReviews(subjectFromParam);
+
+    subjectButtons.style.display = 'none';
+    searchBar.style.display = 'none';
+    gradeButtonGroup.style.display = 'none';
+    textHeading.style.display = 'none';
+    reviewDetail.style.display = 'block';
+  }
+
   savedReviews.forEach((review) => {
     const card = document.createElement('div');
     card.className = 'review-card';

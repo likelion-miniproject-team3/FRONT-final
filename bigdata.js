@@ -282,7 +282,11 @@ function renderSubjects(year, query = '') {
 
     const gotoBtn = card.querySelector('.goto-home-button');
     gotoBtn.addEventListener('click', () => {
-      const highlightName = sub.name.trim().replace(/\s+/g, '');
+      const highlightName = sub.name
+        .replace(/<br>/g, '')
+        .replace(/\n/g, '')
+        .replace(/\s+/g, '')
+        .trim();
 
       // detail 영역(subject-detail-list)에서 일치하는 과목 찾기
       const subjectLines = document.querySelectorAll(

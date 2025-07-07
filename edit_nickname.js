@@ -1,133 +1,75 @@
-document.addEventListener('DOMContentLoaded', async function () {
-  // 프로필 정보 표시
-  try {
-    const res = await fetch('/api/users/me/profile');
-    if (!res.ok) throw new Error();
-    const userInfo = await res.json();
+document.addEventListener('DOMContentLoaded', function () {
+  const saveBtn =
+    document.querySelector('.save-button') ||
+    document.getElementById('submitNicknameBtn');
+  const nicknameInput = document.getElementById('nicknameInput');
 
-    document.getElementById('nicknameDisplay').innerText =
-      userInfo.usernickname || '';
-    document.getElementById('studentNumberDisplay').innerText =
-      userInfo.usernumber || '';
-    document.getElementById('emailDisplay').innerText =
-      userInfo.useremail || '';
-
-    // 사진도 있으면 보여주기
-    const profileImg = document.querySelector('.profile-img');
-    if (profileImg && userInfo.profileImageUrl) {
-      profileImg.style.backgroundImage = `url(${userInfo.profileImageUrl})`;
-      profileImg.style.backgroundSize = 'cover';
-    }
-  } catch (e) {
-    console.error('프로필 API 오류:', e);
-  }
-
-  // 닉네임 저장
-  const saveBtn = document.querySelector('.save-button');
-  if (saveBtn) {
-    saveBtn.addEventListener('click', async function () {
-      const updatedNickname = document.getElementById('nickname').value;
-
-      try {
-        const res = await fetch('/api/users/me/profile/nickname', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ usernickname: updatedNickname }),
-        });
-        if (!res.ok) throw new Error();
-        alert('닉네임이 성공적으로 수정되었습니다!');
-        location.reload();
-      } catch (e) {
-        alert('닉네임 저장 중 오류가 발생했습니다.');
-        console.error(e);
-      }
-    });
-  }
-
-  // 사진 변경
-  const cameraBtn = document.querySelector('.camera-btn');
-  const uploadOptions = document.getElementById('uploadOptions');
-
-  if (cameraBtn && uploadOptions) {
-    cameraBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      uploadOptions.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', function (e) {
-      if (!uploadOptions.contains(e.target) && !cameraBtn.contains(e.target)) {
-        uploadOptions.classList.add('hidden');
-      }
-    });
-  }
-
-  // 업로드용 input
-  const galleryInput = document.createElement('input');
-  galleryInput.type = 'file';
-  galleryInput.accept = 'image/*';
-  galleryInput.style.display = 'none';
-  document.body.appendChild(galleryInput);
-
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.style.display = 'none';
-  document.body.appendChild(fileInput);
-
-  const galleryOption = document.querySelector('#uploadOptions li:first-child');
-  const fileOption = document.querySelector('#uploadOptions li:last-child');
-
-  async function uploadProfilePicture(file) {
-    const formData = new FormData();
-    formData.append('profileImage', file);
-
+  // ✅ userInfo에서 닉네임 꺼내기
+  let currentNickname = '현재 닉네임';
+  const userInfoRaw = localStorage.getItem('userInfo');
+  if (userInfoRaw) {
     try {
-      const res = await fetch('/api/users/me/profile/picture', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!res.ok) throw new Error();
-      alert('프로필 사진이 업로드되었습니다!');
-      location.reload();
+      const userInfo = JSON.parse(userInfoRaw);
+      currentNickname = userInfo.usernickname || currentNickname;
     } catch (e) {
-      alert('프로필 사진 업로드 실패');
-      console.error(e);
+      console.error('userInfo 파싱 오류:', e);
     }
   }
 
-  if (galleryOption) {
-    galleryOption.addEventListener('click', () => {
-      galleryInput.click();
-    });
-  }
-  if (fileOption) {
-    fileOption.addEventListener('click', () => {
-      fileInput.click();
-    });
+  // ✅ placeholder에 반영
+  if (nicknameInput) {
+    nicknameInput.placeholder = currentNickname;
   }
 
-  galleryInput.addEventListener('change', function () {
-    if (galleryInput.files[0]) {
-      uploadProfilePicture(galleryInput.files[0]);
-    }
-  });
-  fileInput.addEventListener('change', function () {
-    if (fileInput.files[0]) {
-      uploadProfilePicture(fileInput.files[0]);
+  nicknameInput.addEventListener('input', function () {
+    const value = nicknameInput.value.trim();
+    if (value.length >= 2 && value.length <= 10) {
+      saveBtn.classList.add('active');
+    } else {
+      saveBtn.classList.remove('active');
     }
   });
 
-  // 홈 버튼 클릭 시 진로에 맞게
+  // ✅ 닉네임 저장 버튼 클릭 이벤트
+  // ✅ 닉네임 저장 버튼 클릭 이벤트
+  if (saveBtn) {
+    saveBtn.addEventListener('click', function () {
+      const updatedNickname = nicknameInput.value.trim();
+
+      if (!updatedNickname) {
+        alert('닉네임을 입력해주세요.');
+        return;
+      }
+
+      // ✅ 로컬스토리지에 저장
+      localStorage.setItem('usernickname', updatedNickname);
+
+      // ✅ userInfo 안의 닉네임도 업데이트해서 마이페이지 반영되게
+      const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+      userInfo.usernickname = updatedNickname;
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+      alert(`닉네임이 '${updatedNickname}'(으)로 저장되었습니다!`);
+
+      // ✅ 입력창 초기화 + placeholder 업데이트
+      nicknameInput.value = '';
+      nicknameInput.placeholder = updatedNickname;
+      saveBtn.classList.remove('active');
+    });
+  }
+
+  // ✅ 홈 버튼 → 고정된 경로로 이동 (필드 정보 없이)
   const homeBtn = document.querySelector('a[href="home.html"]');
   if (homeBtn) {
-    homeBtn.addEventListener('click', async function (e) {
+    homeBtn.addEventListener('click', function (e) {
       e.preventDefault();
+
       try {
-        const res = await fetch('/api/users/me/profile');
-        if (!res.ok) throw new Error();
-        const userInfo = await res.json();
+        const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
         const field = userInfo.field;
 
-        let targetPage = 'home.html';
+        let targetPage = 'home.html'; // 기본 홈
+
         switch (field) {
           case '대학원 진학형':
             targetPage = 'daehakwon.html';
@@ -142,9 +84,11 @@ document.addEventListener('DOMContentLoaded', async function () {
             targetPage = 'micro.html';
             break;
         }
+
         window.location.href = targetPage;
       } catch (e) {
-        window.location.href = 'home.html';
+        console.error('진로 정보 없음:', e);
+        window.location.href = 'home.html'; // fallback
       }
     });
   }

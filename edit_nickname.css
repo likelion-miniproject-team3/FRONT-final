@@ -97,8 +97,10 @@ body {
 .submit-btn.active {
   background-color: #3a66e6;
   color: white;
+  pointer-events: auto; /* 클릭 가능 */
+  opacity: 1;
+  cursor: pointer;
 }
-
 .bottom-nav {
   position: fixed;
   bottom: 0;

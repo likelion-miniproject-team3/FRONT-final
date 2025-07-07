@@ -33,26 +33,33 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function toggleElectiveCourse(name) {
+    const cleanName = name
+      .replace(/<br>/g, ' ')
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
     let selectedElectives = JSON.parse(
       localStorage.getItem('selectedElectives') || '[]'
     );
-    const idx = selectedElectives.indexOf(name);
+    const idx = selectedElectives.indexOf(cleanName);
     if (idx > -1) {
-      selectedElectives.splice(idx, 1); // 이미 담겼으면 해제
+      selectedElectives.splice(idx, 1); // 해제
     } else {
-      selectedElectives.push(name); // 없으면 담기
+      selectedElectives.push(cleanName); // ✅ 정제된 이름 저장!
     }
     localStorage.setItem(
       'selectedElectives',
       JSON.stringify(selectedElectives)
     );
-    renderElectiveSubjects(); // 마이페이지에서 전공 선택 과목을 업데이트
+    renderElectiveSubjects(); // 마이페이지 연동을 위해 호출
   }
 
   if (userInfoStr) {
     try {
       const userInfo = JSON.parse(userInfoStr);
-      userNameDisplay.textContent = userInfo.username || '이름 없음';
+      userNameDisplay.textContent =
+        userInfo.usernickname || userInfo.username || '이름 없음';
     } catch (e) {
       userNameDisplay.textContent = '이름 없음';
     }
@@ -210,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
         name: '의사결정 \n 지원 시스템',
         year: 4,
         semester: '1학기·2학점',
-        type: 'elective',
+        type: 'required',
       },
       {
         name: 'BM 프로젝트',
@@ -573,31 +580,54 @@ document.addEventListener('DOMContentLoaded', function () {
     const savedElectives = JSON.parse(
       localStorage.getItem('savedElectives') || '[]'
     );
+    const completedSubjects = JSON.parse(
+      localStorage.getItem('completedSubjects') || '[]'
+    );
 
-    savedElectives.forEach((subjectName) => {
+    savedElectives.forEach((savedName) => {
       const subject = subjects.find((sub) => {
         const cleanSubName = sub.name
           .replace(/<br>/g, ' ')
           .replace(/\n/g, ' ')
           .replace(/\s+/g, ' ')
           .trim();
-        return cleanSubName === subjectName;
+        return cleanSubName === savedName;
       });
 
       if (subject) {
+        const cleanSubName = subject.name
+          .replace(/<br>/g, ' ')
+          .replace(/\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        const isCompleted = completedSubjects.includes(cleanSubName);
+
         const card = document.createElement('div');
         card.className = 'subject-card elective-card';
         card.innerHTML = `
-          <div class="subject-info">
-            <div class="subject-name">
-              ${subject.name.replace(/\n/g, '<br>')}
-            </div>
-            <div class="subject-semester">${subject.semester}</div>
-            <div class="subject-buttons">
-              <button class="complete-btn">✔ 수강완료</button>
-            </div>
+        <div class="subject-info">
+          <div class="subject-name">
+            ${subject.name.replace(/\n/g, '<br>')}
           </div>
-        `;
+          <div class="subject-semester">${subject.semester}</div>
+          <div class="subject-buttons">
+            <button class="complete-btn ${isCompleted ? 'selected' : ''}">
+              ✔ 수강완료
+            </button>
+          </div>
+        </div>
+      `;
+
+        // ✅ 수강완료 버튼 클릭 이벤트
+        const completeBtn = card.querySelector('.complete-btn');
+        completeBtn.addEventListener('click', () => {
+          toggleCompletion(subject.name);
+          completeBtn.classList.toggle('selected');
+          updateProgressCircle();
+          renderCourseHistory(subject.year);
+        });
+
         electiveContainer.appendChild(card);
       }
     });

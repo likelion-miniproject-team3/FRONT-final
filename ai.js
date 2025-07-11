@@ -4,31 +4,46 @@ function toggleElective(name) {
     .replace(/\n/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  let savedElectives = JSON.parse(
-    localStorage.getItem('savedElectives') || '[]'
+  let selectedElectives = JSON.parse(
+    localStorage.getItem('selectedElectives') || '[]'
   );
-  const idx = savedElectives.indexOf(cleanName);
+  const idx = selectedElectives.indexOf(cleanName);
   if (idx > -1) {
-    savedElectives.splice(idx, 1);
+    selectedElectives.splice(idx, 1);
   } else {
-    savedElectives.push(cleanName);
+    selectedElectives.push(cleanName);
   }
-  localStorage.setItem('savedElectives', JSON.stringify(savedElectives));
+  localStorage.setItem('selectedElectives', JSON.stringify(selectedElectives));
+}
+
+function normalizeName(name) {
+  return name
+    .replace(/<br>/g, '') // <br> 같은 줄바꿈 HTML 제거
+    .replace(/\n/g, '') // 개행 문자 제거
+    .replace(/\s+/g, '') // 띄어쓰기 전부 제거
+    .trim(); // 앞뒤 공백 제거
 }
 
 // 담기 버튼을 클릭할 때마다 로컬스토리지에서 과목을 관리
 function toggleElectiveCourse(name) {
+  const cleanName = name
+    .replace(/<br>/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   let selectedElectives = JSON.parse(
     localStorage.getItem('selectedElectives') || '[]'
   );
-  const idx = selectedElectives.indexOf(name);
-  if (idx > -1) {
-    selectedElectives.splice(idx, 1); // 이미 담겼으면 해제
+
+  const index = selectedElectives.indexOf(cleanName);
+  if (index > -1) {
+    selectedElectives.splice(index, 1);
   } else {
-    selectedElectives.push(name); // 없으면 담기
+    selectedElectives.push(cleanName);
   }
+
   localStorage.setItem('selectedElectives', JSON.stringify(selectedElectives));
-  renderElectiveSubjectsOnMypage(); // 마이페이지에서 전공 선택 과목을 업데이트
 }
 
 const subjects = [
@@ -155,14 +170,21 @@ function setupButtonToggle() {
     const subjectName = btn
       .closest('.subject-info')
       .querySelector('.subject-name').textContent;
+
+    const cleanName = subjectName
+      .replace(/<br>/g, ' ')
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
     const completed = loadCompletedSubjects();
-    if (completed.includes(subjectName)) {
+    if (completed.includes(cleanName)) {
       btn.classList.add('selected');
     }
 
     btn.addEventListener('click', () => {
       btn.classList.toggle('selected');
-      toggleCompletion(subjectName);
+      toggleCompletion(cleanName);
     });
   });
 }
@@ -171,8 +193,8 @@ function renderSubjects(year, query = '') {
   requiredContainer.innerHTML = '';
   electiveContainer.innerHTML = '';
 
-  const savedElectives = JSON.parse(
-    localStorage.getItem('savedElectives') || '[]'
+  const selectedElectives = JSON.parse(
+    localStorage.getItem('selectedElectives') || '[]'
   );
   const completedSubjects = JSON.parse(
     localStorage.getItem('completedSubjects') || '[]'
@@ -194,7 +216,7 @@ function renderSubjects(year, query = '') {
       .trim();
 
     const isCompleted = completedSubjects.includes(cleanSubName);
-    const isSaved = savedElectives.includes(cleanSubName);
+    const isSaved = selectedElectives.includes(cleanSubName);
 
     card.innerHTML = `
       <div class="subject-header">
@@ -238,18 +260,21 @@ function renderSubjects(year, query = '') {
 
     const gotoBtn = card.querySelector('.goto-home-button');
     gotoBtn.addEventListener('click', () => {
-      const highlightName = sub.name
-        .replace(/<br>/g, ' ')
-        .replace(/\n/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+      const highlightName = normalizeName(sub.name);
 
-      // detail 영역(subject-detail-list)에서 일치하는 과목 찾기
+      // 1️⃣ 먼저 기존 테두리 다 제거
+      const allLines = document.querySelectorAll('.subject-line');
+      allLines.forEach((line) => {
+        line.style.border = 'none';
+      });
+
+      // 2️⃣ 새로 누른 과목만 테두리 적용 + 스크롤
       const subjectLines = document.querySelectorAll(
         '#subject-detail-list .name'
       );
       subjectLines.forEach((el) => {
-        const targetName = el.textContent.trim().replace(/\s+/g, '');
+        const targetName = normalizeName(el.textContent);
+
         if (targetName === highlightName) {
           el.closest('.subject-line').style.border = '3px solid #3a66e6';
           el.closest('.subject-line').scrollIntoView({
@@ -374,4 +399,36 @@ document.addEventListener('DOMContentLoaded', function () {
     .querySelector('.year-buttons button[value="1"]')
     .classList.add('selected');
   highlightSubjectIfNeeded(); // << 여기서 호출
+
+  const homeBtn = document.getElementById('nav-home');
+
+  if (homeBtn) {
+    homeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const savedUser = JSON.parse(localStorage.getItem('userInfo'));
+      const field = savedUser?.field;
+
+      const fieldToPage = {
+        대학원진학형: 'daehakwon.html',
+        빅데이터전문가형: 'bigdata.html',
+        인공지능개발자형: 'ai.html',
+        마이크로전공탐색형: 'micro.html',
+      };
+
+      const targetPage = fieldToPage[field];
+
+      if (!targetPage) return; // 예외 처리
+
+      const currentPage = window.location.pathname.split('/').pop();
+
+      if (currentPage === targetPage) {
+        // ✅ 이미 홈 화면이면 새로고침
+        window.location.reload();
+      } else {
+        // ✅ 다른 페이지면 홈 화면으로 이동
+        window.location.href = targetPage;
+      }
+    });
+  }
 });

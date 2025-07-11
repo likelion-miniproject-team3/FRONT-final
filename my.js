@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtered = subjects.filter((sub) => sub.year === year);
 
     filtered.forEach((sub) => {
-      const cleanSubName = sub.name
+      const cleanName = sub.name
         .replace(/<br>/g, ' ')
         .replace(/\n/g, ' ')
         .replace(/\s+/g, ' ')
@@ -483,11 +483,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const currentCompleted = JSON.parse(
         localStorage.getItem('completedSubjects') || '[]'
       );
-      const isCompleted = currentCompleted.includes(cleanSubName);
+      const isCompleted = currentCompleted.includes(cleanName);
 
       const isElectiveSelected = JSON.parse(
         localStorage.getItem('selectedElectives') || '[]'
-      ).includes(sub.name);
+      ).includes(cleanName);
       const card = document.createElement('div');
       card.className = 'subject-card';
       card.classList.add(
@@ -521,6 +521,15 @@ document.addEventListener('DOMContentLoaded', function () {
         updateProgressCircle();
         renderSubjects(sub.year); // 즉시 갱신
         renderCourseHistory(sub.year); // 즉시 갱신
+
+        document
+          .querySelectorAll('.course-history-year-buttons button')
+          .forEach((b) => b.classList.remove('selected'));
+        document
+          .querySelector(
+            `.course-history-year-buttons button[value="${sub.year}"]`
+          )
+          ?.classList.add('selected');
       });
 
       const gotoBtn = card.querySelector('.goto-home-button');
@@ -558,15 +567,13 @@ document.addEventListener('DOMContentLoaded', function () {
       if (sub.type === 'required') {
         requiredContainer.appendChild(card);
       } else {
-        const savedElectives = JSON.parse(
-          localStorage.getItem('savedElectives') || '[]'
+        const selectedElectives = JSON.parse(
+          localStorage.getItem('selectedElectives') || '[]'
         );
-        const cleanSubName = sub.name
-          .replace(/<br>/g, ' ')
-          .replace(/\n/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim();
-        if (savedElectives.includes(cleanSubName)) {
+        const cleanName = normalizeName(sub.name);
+        const normalizedSelected = selectedElectives.map(normalizeName);
+
+        if (normalizedSelected.includes(cleanName)) {
           electiveContainer.appendChild(card);
         }
       }
@@ -577,31 +584,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const electiveContainer = document.getElementById('elective-subjects');
     electiveContainer.innerHTML = '';
 
-    const savedElectives = JSON.parse(
-      localStorage.getItem('savedElectives') || '[]'
+    const selectedElectives = JSON.parse(
+      localStorage.getItem('selectedElectives') || '[]'
     );
     const completedSubjects = JSON.parse(
       localStorage.getItem('completedSubjects') || '[]'
     );
 
-    savedElectives.forEach((savedName) => {
+    selectedElectives.forEach((savedName) => {
       const subject = subjects.find((sub) => {
-        const cleanSubName = sub.name
-          .replace(/<br>/g, ' ')
-          .replace(/\n/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim();
-        return cleanSubName === savedName;
+        return normalizeName(sub.name) === normalizeName(savedName);
       });
 
       if (subject) {
-        const cleanSubName = subject.name
+        const cleanName = subject.name
           .replace(/<br>/g, ' ')
           .replace(/\n/g, ' ')
           .replace(/\s+/g, ' ')
           .trim();
 
-        const isCompleted = completedSubjects.includes(cleanSubName);
+        const isCompleted = completedSubjects
+          .map(normalizeName)
+          .includes(normalizeName(subject.name));
 
         const card = document.createElement('div');
         card.className = 'subject-card elective-card';
@@ -626,6 +630,7 @@ document.addEventListener('DOMContentLoaded', function () {
           completeBtn.classList.toggle('selected');
           updateProgressCircle();
           renderCourseHistory(subject.year);
+          renderElectiveSubjectsOnMypage();
         });
 
         electiveContainer.appendChild(card);
@@ -645,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtered = subjects.filter((sub) => sub.year === year);
 
     filtered.forEach((sub) => {
-      const cleanSubName = sub.name
+      const cleanName = sub.name
         .replace(/<br>/g, ' ')
         .replace(/\n/g, ' ')
         .replace(/\s+/g, ' ')
@@ -654,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const currentCompleted = JSON.parse(
         localStorage.getItem('completedSubjects') || '[]'
       );
-      const isCompleted = currentCompleted.includes(cleanSubName);
+      const isCompleted = currentCompleted.includes(cleanName);
 
       if (!isCompleted) return; // 수강완료되지 않은 과목은 스킵
 
@@ -687,12 +692,12 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem(
           'selectedSubjectForReview',
           JSON.stringify({
-            subject: cleanSubName,
+            subject: cleanName,
             mode: 'lectureWrite',
           })
         );
         window.location.href = `review.html?subject=${encodeURIComponent(
-          cleanSubName
+          cleanName
         )}`;
       });
 
@@ -739,10 +744,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const completedSubjects = JSON.parse(
       localStorage.getItem('completedSubjects') || '[]'
     );
-    const totalScore = completedSubjects.reduce((acc, name) => {
-      const s = subjects.find((x) => x.name === name);
+    const totalScore = completedSubjects.reduce((acc, storedName) => {
+      // storedName은 이미 cleanName으로 저장돼 있어야 하므로 그대로 둠
+      const s = subjects.find((x) => {
+        const cleanName = x.name
+          .replace(/<br>/g, ' ')
+          .replace(/\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        return cleanName === storedName;
+      });
+
       return s ? acc + extractCredit(s.semester) : acc;
     }, 0);
+
     const percent = Math.min(Math.round((totalScore / 70) * 100), 100);
     const lack = Math.max(70 - totalScore, 0);
 
@@ -777,6 +792,14 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.classList.add('selected');
       });
     });
+
+  function normalizeName(name) {
+    return name
+      .replace(/<br>/g, '')
+      .replace(/\n/g, '')
+      .replace(/\s+/g, '')
+      .trim();
+  }
 
   // 수강내역 표시 버튼 클릭 시 과목 렌더링
   document

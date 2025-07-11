@@ -50,6 +50,7 @@ body {
   padding: 0;
   gap: 8px;
   margin-bottom: 1rem;
+  margin-left: 15px;
 }
 
 .year-buttons button {
@@ -82,6 +83,7 @@ body {
 .subject-section {
   padding: 0;
   margin-bottom: 1rem;
+  margin-left: 15px;
 }
 
 .subject-list {

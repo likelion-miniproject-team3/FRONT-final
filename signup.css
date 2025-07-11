@@ -308,7 +308,7 @@ button {
   list-style: none;
   padding: 0;
   margin-top: 16px;
-  max-height: 320px; /* 필요한 높이 설정 */
+  max-height: 324px; /* 필요한 높이 설정 */
   overflow-y: auto;
 }
 

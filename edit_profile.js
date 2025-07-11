@@ -13,6 +13,16 @@ document.addEventListener('DOMContentLoaded', function () {
         userInfo.usernumber || '';
       document.getElementById('emailDisplay').innerText =
         userInfo.useremail || '';
+
+      // ✅ 프로필 이미지 표시
+      const profileImg = document.querySelector('.profile-img');
+      if (userInfo.profileImage) {
+        profileImg.textContent = ''; // "사진" 같은 텍스트 제거
+        profileImg.style.backgroundImage = `url(${userInfo.profileImage})`;
+        profileImg.style.backgroundSize = 'cover'; // 또는 contain
+        profileImg.style.backgroundPosition = 'center';
+        profileImg.style.backgroundRepeat = 'no-repeat';
+      }
     } catch (e) {
       console.error('사용자 정보 불러오기 실패:', e);
     }
@@ -114,5 +124,39 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = 'home.html'; // fallback
       }
     });
+  }
+
+  // 프로필 이미지 표시 함수
+  function setProfileImage(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const profileImg = document.querySelector('.profile-img');
+      profileImg.style.backgroundImage = `url(${e.target.result})`;
+
+      // 선택한 이미지를 localStorage에도 저장해두기 (선택사항)
+      const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      userInfo.profileImage = e.target.result;
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // input 요소로부터 이미지 선택 시 실행
+  galleryInput.addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+      setProfileImage(this.files[0]);
+    }
+  });
+
+  fileInput.addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+      setProfileImage(this.files[0]);
+    }
+  });
+
+  // 프로필 이미지 로딩
+  const profileImgDiv = document.querySelector('.profile-img');
+  if (userInfo && userInfo.profileImage) {
+    profileImgDiv.style.backgroundImage = `url(${userInfo.profileImage})`;
   }
 });

@@ -31,6 +31,10 @@
   height: 120px;
   border-radius: 50%;
   background-color: #d9d9d9;
+
+  background-size: contain; /* ✅ 이미지 전체를 축소해서 보여줌 */
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .camera-btn {

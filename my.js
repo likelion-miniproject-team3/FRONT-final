@@ -55,11 +55,19 @@ document.addEventListener('DOMContentLoaded', function () {
     renderElectiveSubjects(); // 마이페이지 연동을 위해 호출
   }
 
+  const profileImg = document.querySelector('.profile-img');
   if (userInfoStr) {
     try {
       const userInfo = JSON.parse(userInfoStr);
       userNameDisplay.textContent =
         userInfo.usernickname || userInfo.username || '이름 없음';
+      if (userInfo.profileImage) {
+        profileImg.textContent = '';
+        profileImg.style.backgroundImage = `url(${userInfo.profileImage})`;
+        profileImg.style.backgroundSize = 'contain';
+        profileImg.style.backgroundPosition = 'center';
+        profileImg.style.backgroundRepeat = 'no-repeat';
+      }
     } catch (e) {
       userNameDisplay.textContent = '이름 없음';
     }

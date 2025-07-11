@@ -49,12 +49,36 @@ const subjects = [
     followup: '선이수 과목: 데이터분석기초 ⇆ 후속 과목: AI 시스템 활용',
   },
   {
+    name: '객체지향 프로그램',
+    year: 1,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: '자바(JAVA)나 파이썬 기반 언어를 통해 클래스, 상속,<br> 캡슐화,다형성 등 객체지향 개념을 학습하는 과목입니다.',
+    followup: '선이수 과목: 데이터분석기초 ⇆ 후속 과목: SW/HW 통합설계',
+  },
+  {
+    name: '미적분학',
+    year: 1,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: '데이터 분석, 인공지능, 통계적 모델링에 필요한<br> 수학적 사고력과 수식 기반 사고를 기르는 과목입니다.',
+    followup: '후속 과목: 인공지능수학',
+  },
+  {
     name: '프로그래밍 기초',
     year: 2,
     semester: '1학기·2학점',
     type: 'required',
     desc: '컴퓨터 프로그래밍의 기초적인 구조를 파악하고, <br> 파이썬 또는 C언어를 활용하여 문제 해결 능력을 기릅니다.',
     followup: '후속 과목: 객체지향 프로그램, SW/HW 통합설계, AI시스템활용',
+  },
+  {
+    name: '통계기초',
+    year: 2,
+    semester: '1학기·3학점',
+    type: 'required',
+    desc: '평균, 분산, 확률 분포, 정규분포 등 통계 이론을<br> 배우며, 데이터 해석 및 판단의 기초 논리를 학습합니다.',
+    followup: '선이수 과목: 미적분학 ⇆ 후속 과목: 통계실무, 데이터분석기초',
   },
   {
     name: '인공지능 수학',
@@ -70,7 +94,7 @@ const subjects = [
     semester: '2학기·3학점',
     type: 'required',
     desc: '임베디드 시스템을 기반으로 하드웨어와 소프트웨어를<br> 통합 설계하는 과목. 센서 연동, 장치 제어 등을 실습합니다.',
-    followup: '선이수 과목: 미적분학, 통계기초 ⇆ 후속 과목: 인공지능개론',
+    followup: '선이수 과목: 운영체제, 자료구조 ⇆ 후속 과목: 멀티모달 학습',
   },
   {
     name: '통계실무',
@@ -82,9 +106,17 @@ const subjects = [
       '선이수 과목: 통계기초, 데이터분석기초 ⇆ 후속 과목: 데이터사이언스',
   },
   {
+    name: '인공지능 <br> 프로그램',
+    year: 2,
+    semester: '2학기·2학점',
+    type: 'required',
+    desc: '이 과목은 인공지능 알고리즘을 <br> 직접 구현하고 응용하는 실습 중심의 과목입니다',
+    followup: '선이수 과목: 프로그램 기초 ⇆ 후속 과목: 딥러닝, AI시스템활용',
+  },
+  {
     name: '운영체제',
     year: 2,
-    semester: '2학기·3학점',
+    semester: '1학기·3학점',
     type: 'elective',
     desc: '컴퓨터 시스템의 운영 원리(프로세스, 스케줄링 등)를 <br> 이해하고 OS의 구조와 동작 원리를 배웁니다.',
     followup:
@@ -108,6 +140,14 @@ const subjects = [
       '선이수 과목: 데이터사이언스, 운영체제 ⇆ 후속 과목: AI 프로젝트 수업',
   },
   {
+    name: '인공지능 플랫폼 <br> 설계',
+    year: 3,
+    semester: '1학기·3학점',
+    type: 'required',
+    desc: 'AI 시스템을 실제 서비스 환경에 배포하고 <br> 운영하기 위한 플랫폼 구조를 설계하는 과목입니다.',
+    followup: '선이수 과목: 인공지능개론 ⇆ 후속 과목: AI 프로젝트 실습 과목',
+  },
+  {
     name: '데이터마이닝 <br> 및 응용실습',
     year: 3,
     semester: '1학기·3학점',
@@ -125,6 +165,14 @@ const subjects = [
     followup: '선이수 과목: 객체지향프로그래밍⇆ 후속 과목: 시스템 구축 과목',
   },
   {
+    name: '클라우드 컴퓨팅',
+    year: 3,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: 'AWS, Azure 등의 클라우드 환경에서의 데이터 처리, <br> 인공지능 학습 인프라를 구축하는 기술을 학습합니다.',
+    followup: '선이수 과목: 운영체제, 인공지능개론 ⇆ 후속 과목: AI 플랫폼 설계',
+  },
+  {
     name: 'AI 정보보안',
     year: 3,
     semester: '1학기·3학점',
@@ -133,12 +181,77 @@ const subjects = [
     followup: '선이수 과목: 운영체제 ⇆ 후속 과목: 보안 기반 AI 응용 과목',
   },
   {
-    name: '데이터 모델 <br> 및 시각화',
+    name: '딥러닝',
+    year: 3,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: 'CNN, RNN 등 대표적인 딥러닝 구조와 <br> 학습 알고리즘을 배우며, 모델 구현을 실습합니다.',
+    followup: '선이수 과목: 인공지능개론 ⇆ 후속 과목: AI 시스템 활용',
+  },
+  {
+    name: '정밀의료',
+    year: 3,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: '개인의 유전체, 병력 데이터를 분석하여 맞춤형 <br> 진단 및 예측을 수행하는 AI 기반 의료 분석 과목입니다.',
+    followup:
+      '선이수 과목: 딥러닝, 데이터분석기초 ⇆ 후속 과목: AI 기반 예측 시스템',
+  },
+  {
+    name: '멀티모달 학습',
+    year: 3,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: '이미지+텍스트, 음성+영상 등 다양한 유형의 <br> 데이터를 통합해 학습하는 최신 AI 기법을 다룹니다.',
+    followup: '선이수 과목: 딥러닝 ⇆ 후속 과목: 복합 AI 분석 프로젝트',
+  },
+  {
+    name: '의료 DB 설계',
+    year: 3,
+    semester: '1학기·3학점',
+    type: 'elective',
+    desc: '병원 데이터, 전자의무기록(EMR)을 중심으로 한 <br> 데이터베이스 설계 및 SQL 활용 방법을 배웁니다.',
+    followup: '선이수 과목: 데이터분석기초 ⇆ 후속 과목: 의료 전문가 시스템',
+  },
+  {
+    name: '자료구조',
+    year: 3,
+    semester: '2학기·3학점',
+    type: 'elective',
+    desc: '리스트,스택,그래프 등의 기본 자료 구조와 연산 <br> 원리를 이해하며 알고리즘 작성을 위한 기초를 학습합니다.',
+    followup: '선이수 과목: 프로그래밍 기초 ⇆ 후속 과목: 알고리즘 분석',
+  },
+  {
+    name: '데이터 모델  <br> 및 시각화',
     year: 3,
     semester: '2학기·3학점',
     type: 'elective',
     desc: '데이터를 체계적으로 설계하고 Tableau,Power BI, <br> Python 등을 통해 시각화하는 방법을 학습합니다.',
     followup: '선이수 과목: 데이터분석기초 ⇆ 후속 과목: 데이터사이언스',
+  },
+  {
+    name: '자동화 이론',
+    year: 3,
+    semester: '2학기·3학점',
+    type: 'elective',
+    desc: '상태기계, 제어 시스템, 로봇제어 알고리즘 등을 <br> 수학적으로 모델링하고 자동화 시스템 설계 능력을 기릅니다.',
+    followup: '선이수 과목: SW/HW 플렛폼 설계 ⇆ 후속 과목: 임베디드 시스템',
+  },
+  {
+    name: '알고리즘 분석',
+    year: 3,
+    semester: '2학기·3학점',
+    type: 'elective',
+    desc: '정렬, 탐색, 그래프, 동적 계획법 등 알고리즘의 원리와 <br> 시간·공간 복잡도 분석을 통해 프로그램을 설계합니다.',
+    followup: '선이수 과목: 자료구조 ⇆ 후속 과목: AI 모델 최적화',
+  },
+  {
+    name: '의료 전문가 <br> 시스템',
+    year: 3,
+    semester: '2학기·3학점',
+    type: 'elective',
+    desc: '진단 및 치료 보조를 위한 전문가 시스템의 구조, <br> 룰 기반 추론 시스템 설계, 실제 의료 사례 분석을 다룹니다.',
+    followup: '선이수 과목: 정밀의료 ⇆ 후속 과목: AI 기반 병원 운영 시스템',
   },
   {
     name: '의사결정 <br> 지원 시스템',
@@ -156,6 +269,14 @@ const subjects = [
     desc: '데이터를 기반으로 한 AI 비즈니스 모델을 <br> 설계하고 프로토타입을 제안하는 실무형 수업입니다.',
     followup:
       '선이수 과목: 데이터사이언스, AI 플랫폼 설계 ⇆ 후속 과목: 졸업논문',
+  },
+  {
+    name: '졸업논문',
+    year: 4,
+    semester: '1학기·P/NP',
+    type: 'required',
+    desc: '학생 개인 또는 팀 단위로 하나의 문제를 정의하고, <br> 독립적으로 수행하는 졸업 요건 과목입니다.',
+    followup: '선이수 과목: 전공 전반',
   },
 ];
 
@@ -180,15 +301,21 @@ function saveCompletedSubjects(subjects) {
 }
 
 function toggleCompletion(subjectName) {
-  const completed = JSON.parse(
-    localStorage.getItem('completedSubjects') || '[]'
-  );
-  const idx = completed.indexOf(subjectName);
+  const cleanName = subjectName
+    .replace(/<br>/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  let completed = JSON.parse(localStorage.getItem('completedSubjects') || '[]');
+
+  const idx = completed.indexOf(cleanName);
   if (idx > -1) {
     completed.splice(idx, 1);
   } else {
-    completed.push(subjectName);
+    completed.push(cleanName);
   }
+
   localStorage.setItem('completedSubjects', JSON.stringify(completed));
 }
 
@@ -223,21 +350,22 @@ function renderSubjects(year, query = '') {
     localStorage.getItem('completedSubjects') || '[]'
   );
 
-  const filtered = subjects.filter((sub) => sub.year === year);
+  subjects.forEach((sub) => {
+    if (sub.year !== year) return; // 해당 학년만 필터링
 
-  filtered.forEach((sub) => {
     const card = document.createElement('div');
     card.className = 'subject-card';
     card.classList.add(
       sub.type === 'required' ? 'required-card' : 'elective-card'
     );
 
-    const isCompleted = completedSubjects.includes(sub.name);
     const cleanSubName = sub.name
       .replace(/<br>/g, ' ')
       .replace(/\n/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+
+    const isCompleted = completedSubjects.includes(cleanSubName);
     const isSaved = savedElectives.includes(cleanSubName);
 
     card.innerHTML = `
@@ -283,18 +411,16 @@ function renderSubjects(year, query = '') {
     const gotoBtn = card.querySelector('.goto-home-button');
     gotoBtn.addEventListener('click', () => {
       const highlightName = sub.name
-        .replace(/<br>/g, '')
-        .replace(/\n/g, '')
-        .replace(/\s+/g, '')
+        .replace(/<br>/g, ' ')
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
 
       // detail 영역(subject-detail-list)에서 일치하는 과목 찾기
       const subjectLines = document.querySelectorAll(
         '#subject-detail-list .name'
       );
-
       subjectLines.forEach((el) => {
-        // 이름 공백 제거 후 비교
         const targetName = el.textContent.trim().replace(/\s+/g, '');
         if (targetName === highlightName) {
           el.closest('.subject-line').style.border = '3px solid #3a66e6';
@@ -302,11 +428,19 @@ function renderSubjects(year, query = '') {
             behavior: 'smooth',
             block: 'center',
           });
-        } else {
-          el.closest('.subject-line').style.border = 'none'; // 다른 과목은 초기화
         }
       });
     });
+
+    // 검색어와 일치하는 과목에 대해서만 match 클래스를 추가하고 그림자 효과 적용
+    if (
+      query.trim() !== '' &&
+      sub.name.toLowerCase().includes(query.toLowerCase())
+    ) {
+      card.classList.add('match'); // 검색 결과에 일치하는 과목에만 match 클래스를 추가
+    } else {
+      card.classList.remove('match'); // 검색어와 일치하지 않으면 match 클래스를 제거
+    }
 
     if (sub.type === 'elective') {
       const addBtn = card.querySelector('.add-btn');
@@ -320,6 +454,12 @@ function renderSubjects(year, query = '') {
 
   renderSubjectTextInfo(year);
 }
+
+// 검색 입력이 있을 때마다 과목 렌더링
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim().toLowerCase();
+  renderSubjects(currentYear, query);
+});
 
 function renderSubjectTextInfo(year) {
   subjectDetailList.innerHTML = '';

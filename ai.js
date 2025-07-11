@@ -49,63 +49,12 @@ const subjects = [
     followup: '선이수 과목: 데이터분석기초 ⇆ 후속 과목: AI 시스템 활용',
   },
   {
-    name: '프로그래밍 기초',
-    year: 2,
-    semester: '1학기·2학점',
-    type: 'required',
-    desc: '컴퓨터 프로그래밍의 기초적인 구조를 파악하고, <br> 파이썬 또는 C언어를 활용하여 문제 해결 능력을 기릅니다.',
-    followup: '후속 과목: 객체지향 프로그램, SW/HW 통합설계, AI시스템활용',
-  },
-  {
-    name: '인공지능 수학',
-    year: 2,
-    semester: '1학기·3학점',
-    type: 'required',
-    desc: '인공지능 알고리즘에 필요한 행렬 연산 등을 다루며,<br> AI 모델 수학적 이해를 도와주는 수학 중심 과목입니다.',
-    followup: '선이수 과목: 미적분학, 통계기초 ⇆ 후속 과목: 인공지능개론',
-  },
-  {
     name: 'SW/HW <br> 플랫폼 설계',
     year: 2,
     semester: '2학기·3학점',
     type: 'required',
     desc: '임베디드 시스템을 기반으로 하드웨어와 소프트웨어를<br> 통합 설계하는 과목. 센서 연동, 장치 제어 등을 실습합니다.',
-    followup: '선이수 과목: 미적분학, 통계기초 ⇆ 후속 과목: 인공지능개론',
-  },
-  {
-    name: '통계실무',
-    year: 2,
-    semester: '2학기·3학점',
-    type: 'required',
-    desc: '통계 소프트웨어(예: SPSS, R 등)를 활용한 <br> 실제 데이터 분석 프로젝트 수행을 중심으로 하는 수업입니다.',
-    followup:
-      '선이수 과목: 통계기초, 데이터분석기초 ⇆ 후속 과목: 데이터사이언스',
-  },
-  {
-    name: '운영체제',
-    year: 2,
-    semester: '2학기·3학점',
-    type: 'elective',
-    desc: '컴퓨터 시스템의 운영 원리(프로세스, 스케줄링 등)를 <br> 이해하고 OS의 구조와 동작 원리를 배웁니다.',
-    followup:
-      '선이수 과목: 프로그래밍기초, 컴퓨터구조 ⇆ 후속 과목: 멀티컴퓨터학습',
-  },
-  {
-    name: '데이터 사이언스',
-    year: 2,
-    semester: '1학기·3학점',
-    type: 'elective',
-    desc: '통계, 컴퓨터공학, 머신러닝 기반으로 데이터 분석, <br> 모델링, 시각화의 전 과정을 배우는 융합형 과목입니다.',
-    followup: '선이수 과목: 데이터분석기초, 통계기초 ⇆ 후속 과목: 빅데이터처리',
-  },
-  {
-    name: '빅데이터 처리',
-    year: 2,
-    semester: '2학기·3학점',
-    type: 'elective',
-    desc: '대용량 데이터를 수집·저장·분석하는 기술을 배우며, <br> Hadoop, Spark 등의 플랫폼 사용법을 학습합니다.',
-    followup:
-      '선이수 과목: 데이터사이언스, 운영체제 ⇆ 후속 과목: AI 프로젝트 수업',
+    followup: '선이수 과목: 미적분학,통계기초 ⇆ 후속 과목: 인공지능개론',
   },
   {
     name: '데이터마이닝 <br> 및 응용실습',
@@ -180,15 +129,21 @@ function saveCompletedSubjects(subjects) {
 }
 
 function toggleCompletion(subjectName) {
-  const completed = JSON.parse(
-    localStorage.getItem('completedSubjects') || '[]'
-  );
-  const idx = completed.indexOf(subjectName);
+  const cleanName = subjectName
+    .replace(/<br>/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  let completed = JSON.parse(localStorage.getItem('completedSubjects') || '[]');
+
+  const idx = completed.indexOf(cleanName);
   if (idx > -1) {
     completed.splice(idx, 1);
   } else {
-    completed.push(subjectName);
+    completed.push(cleanName);
   }
+
   localStorage.setItem('completedSubjects', JSON.stringify(completed));
 }
 
@@ -223,21 +178,22 @@ function renderSubjects(year, query = '') {
     localStorage.getItem('completedSubjects') || '[]'
   );
 
-  const filtered = subjects.filter((sub) => sub.year === year);
+  subjects.forEach((sub) => {
+    if (sub.year !== year) return; // 해당 학년만 필터링
 
-  filtered.forEach((sub) => {
     const card = document.createElement('div');
     card.className = 'subject-card';
     card.classList.add(
       sub.type === 'required' ? 'required-card' : 'elective-card'
     );
 
-    const isCompleted = completedSubjects.includes(sub.name);
     const cleanSubName = sub.name
       .replace(/<br>/g, ' ')
       .replace(/\n/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+
+    const isCompleted = completedSubjects.includes(cleanSubName);
     const isSaved = savedElectives.includes(cleanSubName);
 
     card.innerHTML = `
@@ -283,18 +239,16 @@ function renderSubjects(year, query = '') {
     const gotoBtn = card.querySelector('.goto-home-button');
     gotoBtn.addEventListener('click', () => {
       const highlightName = sub.name
-        .replace(/<br>/g, '')
-        .replace(/\n/g, '')
-        .replace(/\s+/g, '')
+        .replace(/<br>/g, ' ')
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
 
       // detail 영역(subject-detail-list)에서 일치하는 과목 찾기
       const subjectLines = document.querySelectorAll(
         '#subject-detail-list .name'
       );
-
       subjectLines.forEach((el) => {
-        // 이름 공백 제거 후 비교
         const targetName = el.textContent.trim().replace(/\s+/g, '');
         if (targetName === highlightName) {
           el.closest('.subject-line').style.border = '3px solid #3a66e6';
@@ -302,11 +256,19 @@ function renderSubjects(year, query = '') {
             behavior: 'smooth',
             block: 'center',
           });
-        } else {
-          el.closest('.subject-line').style.border = 'none'; // 다른 과목은 초기화
         }
       });
     });
+
+    // 검색어와 일치하는 과목에 대해서만 match 클래스를 추가하고 그림자 효과 적용
+    if (
+      query.trim() !== '' &&
+      sub.name.toLowerCase().includes(query.toLowerCase())
+    ) {
+      card.classList.add('match'); // 검색 결과에 일치하는 과목에만 match 클래스를 추가
+    } else {
+      card.classList.remove('match'); // 검색어와 일치하지 않으면 match 클래스를 제거
+    }
 
     if (sub.type === 'elective') {
       const addBtn = card.querySelector('.add-btn');
@@ -320,6 +282,12 @@ function renderSubjects(year, query = '') {
 
   renderSubjectTextInfo(year);
 }
+
+// 검색 입력이 있을 때마다 과목 렌더링
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim().toLowerCase();
+  renderSubjects(currentYear, query);
+});
 
 function renderSubjectTextInfo(year) {
   subjectDetailList.innerHTML = '';

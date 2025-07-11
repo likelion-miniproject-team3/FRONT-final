@@ -100,6 +100,14 @@ body {
   display: none;
 }
 
+.subject-card.match {
+  box-shadow: 0px 4px 12px #d9d9d9; /* 부드럽고 자연스러운 그림자 */
+  border-radius: 20px; /* 둥근 모서리 */
+  transition: all 0.2s ease; /* 부드러운 변환 */
+  z-index: 10;
+  /* transform: scale(1.02); 제거 */
+}
+
 /* 카드 전체 감싸는 컨테이너 */
 .subject-card {
   width: 180px;
@@ -110,6 +118,7 @@ body {
   align-items: center;
   background: transparent;
   overflow: visible;
+  border-radius: 20px;
 }
 
 /* 상단 파란 배경 */

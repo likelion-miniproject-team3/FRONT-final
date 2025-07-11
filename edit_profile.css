@@ -169,6 +169,13 @@
   margin-top: 16px;
 }
 
+.save-button.active {
+  background-color: #3a66e6;
+  color: white;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
 .back-button-wrapper {
   position: absolute;
   top: 20px;

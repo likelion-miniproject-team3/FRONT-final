@@ -144,7 +144,7 @@ const subjects = [
     name: '의사결정 <br> 지원 시스템',
     year: 4,
     semester: '1학기·2학점',
-    type: 'elective',
+    type: 'required',
     desc: 'AI 기반 예측 모델, 전문가 시스템, 통계적 판단 <br> 알고리즘 등을 의사결정 시나리오에 적용합니다.',
     followup: '선이수 과목: 의료DB설계, 정밀의료 ⇆ 후속 과목: BM 프로젝트',
   },
@@ -180,15 +180,21 @@ function saveCompletedSubjects(subjects) {
 }
 
 function toggleCompletion(subjectName) {
-  const completed = JSON.parse(
-    localStorage.getItem('completedSubjects') || '[]'
-  );
-  const idx = completed.indexOf(subjectName);
+  const cleanName = subjectName
+    .replace(/<br>/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  let completed = JSON.parse(localStorage.getItem('completedSubjects') || '[]');
+
+  const idx = completed.indexOf(cleanName);
   if (idx > -1) {
     completed.splice(idx, 1);
   } else {
-    completed.push(subjectName);
+    completed.push(cleanName);
   }
+
   localStorage.setItem('completedSubjects', JSON.stringify(completed));
 }
 
@@ -223,21 +229,22 @@ function renderSubjects(year, query = '') {
     localStorage.getItem('completedSubjects') || '[]'
   );
 
-  const filtered = subjects.filter((sub) => sub.year === year);
+  subjects.forEach((sub) => {
+    if (sub.year !== year) return; // 해당 학년만 필터링
 
-  filtered.forEach((sub) => {
     const card = document.createElement('div');
     card.className = 'subject-card';
     card.classList.add(
       sub.type === 'required' ? 'required-card' : 'elective-card'
     );
 
-    const isCompleted = completedSubjects.includes(sub.name);
     const cleanSubName = sub.name
       .replace(/<br>/g, ' ')
       .replace(/\n/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+
+    const isCompleted = completedSubjects.includes(cleanSubName);
     const isSaved = savedElectives.includes(cleanSubName);
 
     card.innerHTML = `
@@ -283,18 +290,16 @@ function renderSubjects(year, query = '') {
     const gotoBtn = card.querySelector('.goto-home-button');
     gotoBtn.addEventListener('click', () => {
       const highlightName = sub.name
-        .replace(/<br>/g, '')
-        .replace(/\n/g, '')
-        .replace(/\s+/g, '')
+        .replace(/<br>/g, ' ')
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
 
       // detail 영역(subject-detail-list)에서 일치하는 과목 찾기
       const subjectLines = document.querySelectorAll(
         '#subject-detail-list .name'
       );
-
       subjectLines.forEach((el) => {
-        // 이름 공백 제거 후 비교
         const targetName = el.textContent.trim().replace(/\s+/g, '');
         if (targetName === highlightName) {
           el.closest('.subject-line').style.border = '3px solid #3a66e6';
@@ -302,11 +307,19 @@ function renderSubjects(year, query = '') {
             behavior: 'smooth',
             block: 'center',
           });
-        } else {
-          el.closest('.subject-line').style.border = 'none'; // 다른 과목은 초기화
         }
       });
     });
+
+    // 검색어와 일치하는 과목에 대해서만 match 클래스를 추가하고 그림자 효과 적용
+    if (
+      query.trim() !== '' &&
+      sub.name.toLowerCase().includes(query.toLowerCase())
+    ) {
+      card.classList.add('match'); // 검색 결과에 일치하는 과목에만 match 클래스를 추가
+    } else {
+      card.classList.remove('match'); // 검색어와 일치하지 않으면 match 클래스를 제거
+    }
 
     if (sub.type === 'elective') {
       const addBtn = card.querySelector('.add-btn');
@@ -320,6 +333,12 @@ function renderSubjects(year, query = '') {
 
   renderSubjectTextInfo(year);
 }
+
+// 검색 입력이 있을 때마다 과목 렌더링
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.trim().toLowerCase();
+  renderSubjects(currentYear, query);
+});
 
 function renderSubjectTextInfo(year) {
   subjectDetailList.innerHTML = '';
